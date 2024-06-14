@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.coderscampus.assignment13.domain.Address;
+import com.coderscampus.assignment13.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,12 @@ public class UserService {
 	private UserRepository userRepo;
 	@Autowired
 	private AccountRepository accountRepo;
-	
+	@Autowired
+	private AddressRepository addressRepo;
+    @Autowired
+    private AddressRepository addressRepository;
+
+
 	public List<User> findByUsername(String username) {
 		return userRepo.findByUsername(username);
 	}
@@ -64,10 +71,18 @@ public class UserService {
 			accountRepo.save(checking);
 			accountRepo.save(savings);
 		}
+		Address address = user.getAddress();
+		if (address != null) {
+			addressRepo.save(address);
+		}
 		return userRepo.save(user);
 	}
 
 	public void delete(Long userId) {
 		userRepo.deleteById(userId);
+	}
+
+	public Address saveAddress(Address address) {
+		return addressRepository.save(address);
 	}
 }

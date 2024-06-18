@@ -47,6 +47,9 @@ public class UserController {
 	@GetMapping("/users/{userId}")
 	public String getOneUser (ModelMap model, @PathVariable Long userId) {
 		User user = userService.findById(userId);
+		if (user.getAddress() == null){
+			user.setAddress(new Address());
+		}
 		model.put("users", Collections.singletonList(user));
 		model.put("user", user);
 		model.put("address", user.getAddress());
@@ -54,12 +57,25 @@ public class UserController {
 	}
 	
 	@PostMapping("/users/{userId}")
-	public String postOneUser (User user) {
-		userService.saveUser(user);
-		if(user.getAddress() != null) {
-			userService.saveAddress(user.getAddress());
+	public String updateUser (@PathVariable Long userId, User user) {
+		User existingUser = userService.findById(userId);
+		if(existingUser != null) {
+			existingUser.setUsername(user.getUsername());
+			existingUser.setPassword(user.getPassword());
+			existingUser.setName(user.getName());
+			if(existingUser.getAddress() ==null){
+				existingUser.setAddress(new Address());
+			}
+			existingUser.getAddress().setAddressLine1(user.getAddress().getAddressLine1());
+			existingUser.getAddress().setAddressLine2(user.getAddress().getAddressLine2());
+			existingUser.getAddress().setCity(user.getAddress().getCity());
+			existingUser.getAddress().setRegion(user.getAddress().getRegion());
+			existingUser.getAddress().setCountry(user.getAddress().getCountry());
+			existingUser.getAddress().setZipCode(user.getAddress().getZipCode());
+			userService.saveUser(existingUser);
+			userService.saveAddress(existingUser.getAddress());
 		}
-		return "redirect:/users/"+user.getUserId();
+		return "redirect:/users/" +userId;
 	}
 	
 	@PostMapping("/users/{userId}/delete")

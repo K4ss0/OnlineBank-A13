@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.transaction.Transactional;
 
 import com.coderscampus.assignment13.domain.Address;
 import com.coderscampus.assignment13.repository.AddressRepository;
@@ -82,5 +83,19 @@ public class UserService {
 
 	public Address saveAddress(Address address) {
 		return addressRepo.save(address);
+	}
+
+	@Transactional
+	public User createNewAccount(Long userId, Account account) {
+		User user = findById(userId);
+		if (user != null) {
+			account.setAccountId(null);
+			accountRepo.save(account);
+			account.getUsers().add(user);
+			user.getAccounts().add(account);
+			userRepo.save(user);
+			return  user;
+		}
+		return null;
 	}
 }

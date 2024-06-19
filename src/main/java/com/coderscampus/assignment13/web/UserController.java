@@ -4,9 +4,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
+import com.coderscampus.assignment13.domain.Account;
 import com.coderscampus.assignment13.domain.Address;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -90,5 +92,16 @@ public class UserController {
 	public String deleteOneUser (@PathVariable Long userId) {
 		userService.delete(userId);
 		return "redirect:/users";
+	}
+
+	@PostMapping("/users/{userId}/accounts")
+	public String createNewAccount(@PathVariable Long userId, Account account) {
+		User user = userService.findById(userId);
+		if (user != null){
+			account.getUsers().add(user);
+			user.getAccounts().add(account);
+			userService.saveUser(user);
+		}
+		return "redirect:/users/" + userId;
 	}
 }

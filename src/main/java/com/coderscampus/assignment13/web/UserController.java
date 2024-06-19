@@ -61,19 +61,27 @@ public class UserController {
 		User existingUser = userService.findById(userId);
 		if(existingUser != null) {
 			existingUser.setUsername(user.getUsername());
-			existingUser.setPassword(user.getPassword());
-			existingUser.setName(user.getName());
-			if(existingUser.getAddress() ==null){
-				existingUser.setAddress(new Address());
+			if (user.getPassword() != null && user.getPassword().isEmpty()) {
+				existingUser.setPassword(user.getPassword());
 			}
-			existingUser.getAddress().setAddressLine1(user.getAddress().getAddressLine1());
-			existingUser.getAddress().setAddressLine2(user.getAddress().getAddressLine2());
-			existingUser.getAddress().setCity(user.getAddress().getCity());
-			existingUser.getAddress().setRegion(user.getAddress().getRegion());
-			existingUser.getAddress().setCountry(user.getAddress().getCountry());
-			existingUser.getAddress().setZipCode(user.getAddress().getZipCode());
+			existingUser.setName(user.getName());
+
+			Address address = user.getAddress();
+			if (address != null) {
+				if (existingUser.getAddress() == null) {
+					address.setUser(existingUser);
+					existingUser.setAddress(address);
+				} else {
+					Address existingAddress = existingUser.getAddress();
+					existingAddress.setAddressLine1(address.getAddressLine1());
+					existingAddress.setAddressLine2(address.getAddressLine2());
+					existingAddress.setCity(address.getCity());
+					existingAddress.setRegion(address.getRegion());
+					existingAddress.setCountry(address.getCountry());
+					existingAddress.setZipCode(address.getZipCode());
+				}
+			}
 			userService.saveUser(existingUser);
-			userService.saveAddress(existingUser.getAddress());
 		}
 		return "redirect:/users/" +userId;
 	}

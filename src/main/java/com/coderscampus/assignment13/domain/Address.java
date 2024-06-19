@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 public class Address {
-	private Long userId;
+	private Long addressId;
 	private User user;
 	private String addressLine1;
 	private String addressLine2;
@@ -15,16 +15,14 @@ public class Address {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long getUserId() {
-		return userId;
+	public Long getAddressId() {
+		return addressId;
 	}
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setAddressId(Long addressId) {
+		this.addressId = addressId;
 	}
 	
-	@OneToOne
-	@MapsId
-	@JoinColumn(name="user_id", nullable = false)
+	@OneToOne(mappedBy = "address")
 	public User getUser() {
 		return user;
 	}

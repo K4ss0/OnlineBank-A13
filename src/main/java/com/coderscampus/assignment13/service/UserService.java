@@ -24,8 +24,6 @@ public class UserService {
 	private AccountRepository accountRepo;
 	@Autowired
 	private AddressRepository addressRepo;
-    @Autowired
-    private AddressRepository addressRepository;
 
 
 	public List<User> findByUsername(String username) {
@@ -83,6 +81,6 @@ public class UserService {
 	}
 
 	public Address saveAddress(Address address) {
-		return addressRepository.save(address);
+		return addressRepo.save(address);
 	}
 }

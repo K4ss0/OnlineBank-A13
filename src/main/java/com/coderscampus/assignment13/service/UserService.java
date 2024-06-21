@@ -31,7 +31,7 @@ public class UserService {
 
 	public User findById(Long userId) {
 		Optional<User> userOpt = userRepo.findById(userId);
-		return userOpt.orElse(new User());
+		return userOpt.orElse(null);
 	}
 
 	public User saveUser(User user) {
@@ -77,4 +77,6 @@ public class UserService {
 		}
 		return null;
 	}
+
+
 }

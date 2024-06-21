@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.coderscampus.assignment13.domain.Account;
 import com.coderscampus.assignment13.domain.Address;
+import com.coderscampus.assignment13.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +24,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
-	
+    @Autowired
+    private AccountService accountService;
+
 	@GetMapping("/register")
 	public String getCreateUser (ModelMap model) {
 		model.put("user", new User());
@@ -102,5 +105,22 @@ public class UserController {
 		newAccount.setAccountName(account);
 		userService.createNewAccount(userId, newAccount);
 		return "redirect:/users/" + userId;
+	}
+
+	@GetMapping("/users/{userId}/accounts/{accountId}")
+	public String getAccount (@PathVariable Long userId, @PathVariable Long accountId, Model model) {
+		User user = userService.findById(userId);
+		Account account = accountService.findById(accountId);
+		model.addAttribute("user", user);
+		model.addAttribute("account", account);
+		return "accounts";
+	}
+
+	@PostMapping("/users/{userId}/accounts/{accountId}")
+	public String updateAccount(@PathVariable Long userId, @PathVariable Long accountId, @RequestParam String accountName) {
+	Account account = accountService.findById(accountId);
+	account.setAccountName(accountName);
+	accountService.save(account);
+	return "redirect:/users/" + userId;
 	}
 }

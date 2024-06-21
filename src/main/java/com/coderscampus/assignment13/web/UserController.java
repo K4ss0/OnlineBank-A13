@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.coderscampus.assignment13.domain.User;
 import com.coderscampus.assignment13.service.UserService;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -95,13 +96,11 @@ public class UserController {
 	}
 
 	@PostMapping("/users/{userId}/accounts")
-	public String createNewAccount(@PathVariable Long userId, Account account) {
-		User user = userService.findById(userId);
-		if (user != null){
-			account.getUsers().add(user);
-			user.getAccounts().add(account);
-			userService.saveUser(user);
-		}
+	public String createNewAccount(@PathVariable Long userId, @RequestParam String account) {
+		System.out.println("Creating new account " + account + " for user " + userId);
+		Account newAccount = new Account();
+		newAccount.setAccountName(account);
+		userService.createNewAccount(userId, newAccount);
 		return "redirect:/users/" + userId;
 	}
 }

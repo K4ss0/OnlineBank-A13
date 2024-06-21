@@ -15,7 +15,6 @@ public class User {
 	private String username;
 	private String password;
 	private String name;
-	private LocalDate createdDate;
 	private List<Account> accounts = new ArrayList<>();
 	private Address address;
 	
@@ -27,32 +26,26 @@ public class User {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+	@Column(length = 100)
 	public String getUsername() {
 		return username;
 	}
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	@Column(length = 100)
 	public String getPassword() {
 		return password;
 	}
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getName() {
-		return name;
-	}
+	@Column(length = 100)
+	public String getName() {return name;}
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public LocalDate getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(LocalDate createdDate) {
-		this.createdDate = createdDate;
-	}
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
 	@JoinTable(name = "user_account",
 	           joinColumns = @JoinColumn(name = "user_id"), 
 	           inverseJoinColumns = @JoinColumn(name = "account_id"))
@@ -62,7 +55,8 @@ public class User {
 	public void setAccounts(List<Account> accounts) {
 		this.accounts = accounts;
 	}
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
 	public Address getAddress() {
 		return address;
